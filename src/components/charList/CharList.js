@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, useMemo} from 'react';
 import PropTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
@@ -16,7 +16,8 @@ const CharList = (props) => {
     const {loading, error, getAllCharacters} = useMarvelService();
 
     useEffect(() => {
-        onRequest(offset, true);
+        onRequest(offset, true)
+         // eslint-disable-next-line
     }, [])
 
     const onRequest = (offset, initial) => {
@@ -31,10 +32,10 @@ const CharList = (props) => {
             ended = true;
         }
 
-        setCharList(charList => [...charList, ...newCharList]);
-        setNewItemLoading(newItemLoading => false);
+        setCharList([...charList, ...newCharList]);
+        setNewItemLoading(false);
         setOffset(offset => offset + 9);
-        setCharEnded(charEnded => ended);
+        setCharEnded(ended);
     }
 
     const itemRefs = useRef([]);
@@ -57,10 +58,10 @@ const CharList = (props) => {
             
             return (
                 <li 
+                    key={item.id}
                     className="char__item"
                     tabIndex={0}
                     ref={el => itemRefs.current[i] = el}
-                    key={item.id}
                     onClick={() => {
                         props.onCharSelected(item.id);
                         focusOnItem(i);
@@ -84,10 +85,14 @@ const CharList = (props) => {
         )
     }
     
-    const items = renderItems(charList);
+    const items = useMemo(() => {
+        return renderItems(charList)
+         // eslint-disable-next-line
+    }, [charList])
 
     const errorMessage = error ? <ErrorMessage/> : null;
     const spinner = loading && !newItemLoading ? <Spinner/> : null;
+
 
     return (
         <div className="char__list">

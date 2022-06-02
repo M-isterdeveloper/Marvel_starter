@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
@@ -11,18 +12,19 @@ const CharInfo = (props) => {
 
     const [char, setChar] = useState(null);
 
-    const {loading, error, getCharacter, clearError} =  useMarvelService();
+    const {loading, error, getCharacter, clearError} = useMarvelService();
 
     useEffect(() => {
-            updateChar();
+        updateChar()
+        // eslint-disable-next-line
     }, [props.charId])
-
 
     const updateChar = () => {
         const {charId} = props;
         if (!charId) {
             return;
         }
+
         clearError();
         getCharacter(charId)
             .then(onCharLoaded)
@@ -91,6 +93,10 @@ const View = ({char}) => {
             </ul>
         </>
     )
+}
+
+CharInfo.propTypes = {
+    charId: PropTypes.number
 }
 
 export default CharInfo;
